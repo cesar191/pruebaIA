@@ -7,6 +7,7 @@
         xmlns:vm="clr-namespace:TodoListWpf.ViewModels"
         mc:Ignorable="d"
         Title="Todo List Studio" 
+        Icon="app_icon.ico"
         Height="760" Width="920"
         MinHeight="600" MinWidth="740"
         WindowStartupLocation="CenterScreen"

@@ -56,6 +56,24 @@ public class MainViewModelTests
     }
 
     /// <summary>
+    /// Tarea: Valida que la nueva tarea se agregue al inicio de la colección para visibilidad inmediata.
+    /// </summary>
+    [Fact]
+    public void EjecutarAgregarTarea_InsertaAlPrincipioDeLaLista()
+    {
+        // Arrange
+        var srvFake = new FakePersistenciaMemoria();
+        var objViewModel = new MainViewModel(srvFake);
+        objViewModel.StrNuevoTitulo = "Tarea más reciente";
+
+        // Act
+        objViewModel.CmdAgregarTarea.Execute(null);
+
+        // Assert
+        Assert.Equal("Tarea más reciente", objViewModel.ColTareas.First().StrTituloTarea);
+    }
+
+    /// <summary>
     /// Tarea: Valida que no se permita agregar tareas si el título está vacío o solo contiene espacios.
     /// </summary>
     [Theory]
@@ -118,7 +136,7 @@ public class MainViewModelTests
     }
 
     /// <summary>
-    /// Tarea: Valida que el filtro por estado muestre únicamente las tareas correspondientes.
+    /// Tarea: Valida que el filtro por estado muestre únicamente las tareas pendientes.
     /// </summary>
     [Fact]
     public void StrFiltroActual_FiltrarPorPendientes_MuestraSoloPendientes()
@@ -132,10 +150,31 @@ public class MainViewModelTests
 
         // Assert
         Assert.All(objViewModel.ColTareasFiltradas, t => Assert.False(t.BoolCompletada));
+        Assert.True(objViewModel.BoolEsFiltroPendientes);
+        Assert.False(objViewModel.BoolEsFiltroTodas);
     }
 
     /// <summary>
-    /// Tarea: Valida que la búsqueda por texto filtre por título o descripción.
+    /// Tarea: Valida que el filtro por estado muestre únicamente las tareas completadas.
+    /// </summary>
+    [Fact]
+    public void StrFiltroActual_FiltrarPorCompletadas_MuestraSoloCompletadas()
+    {
+        // Arrange
+        var srvFake = new FakePersistenciaMemoria();
+        var objViewModel = new MainViewModel(srvFake);
+
+        // Act
+        objViewModel.StrFiltroActual = "Completadas";
+
+        // Assert
+        Assert.All(objViewModel.ColTareasFiltradas, t => Assert.True(t.BoolCompletada));
+        Assert.True(objViewModel.BoolEsFiltroCompletadas);
+        Assert.False(objViewModel.BoolEsFiltroTodas);
+    }
+
+    /// <summary>
+    /// Tarea: Valida que la búsqueda por texto filtre por coincidencia en título o descripción.
     /// </summary>
     [Fact]
     public void StrBusqueda_FiltraPorCoincidenciaEnTitulo()
@@ -176,6 +215,27 @@ public class MainViewModelTests
         // Assert
         Assert.Equal(0, objViewModel.IntTareasCompletadas);
         Assert.True(objViewModel.ColTareas.All(t => !t.BoolCompletada));
+    }
+
+    /// <summary>
+    /// Tarea: Valida que el comando LimpiarCompletadas no pueda ejecutarse si no hay tareas completadas.
+    /// </summary>
+    [Fact]
+    public void CmdLimpiarCompletadas_SinTareasCompletadas_NoPuedeEjecutarse()
+    {
+        // Arrange
+        var srvFake = new FakePersistenciaMemoria();
+        var objViewModel = new MainViewModel(srvFake);
+        foreach (var objItem in objViewModel.ColTareas)
+        {
+            objItem.BoolCompletada = false;
+        }
+
+        // Act
+        bool boolPuedeEjecutar = objViewModel.CmdLimpiarCompletadas.CanExecute(null);
+
+        // Assert
+        Assert.False(boolPuedeEjecutar);
     }
 
     /// <summary>
