@@ -1,0 +1,14 @@
+## Compilación y binarios
+bin/
+obj/
+*.user
+*.suo
+
+## Entorno local de CLI y NuGet
+.dotnet/
+.nuget/
+
+## Visual Studio / VS Code
+.vs/
+.vscode/
+*.DotSettings.user
