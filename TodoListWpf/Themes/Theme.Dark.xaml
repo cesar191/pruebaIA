@@ -1,21 +1,47 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Paleta de Colores - Modo Oscuro -->
-    <SolidColorBrush x:Key="BrushFondoVentana" Color="#121824" />
-    <SolidColorBrush x:Key="BrushFondoTarjeta" Color="#1F2937" />
-    <SolidColorBrush x:Key="BrushFondoItem" Color="#283548" />
-    <SolidColorBrush x:Key="BrushBorde" Color="#374151" />
-    <SolidColorBrush x:Key="BrushBordeInput" Color="#4B5563" />
-    <SolidColorBrush x:Key="BrushFondoInput" Color="#1A2234" />
-    <SolidColorBrush x:Key="BrushTextoPrimario" Color="#F9FAFB" />
-    <SolidColorBrush x:Key="BrushTextoSecundario" Color="#D1D5DB" />
-    <SolidColorBrush x:Key="BrushTextoMuted" Color="#9CA3AF" />
-    <SolidColorBrush x:Key="BrushFondoBotonFiltro" Color="#374151" />
-    <SolidColorBrush x:Key="BrushTextoBotonFiltro" Color="#F3F4F6" />
-    <SolidColorBrush x:Key="BrushBotonHover" Color="#4B5563" />
-    <SolidColorBrush x:Key="BrushAcento" Color="#3B82F6" />
-    <SolidColorBrush x:Key="BrushAcentoHover" Color="#60A5FA" />
+    <!-- Paleta de Colores Moderna - Modo Oscuro (Dark Slate & Indigo) -->
+    <SolidColorBrush x:Key="BrushFondoVentana" Color="#0B0F17" />
+    <SolidColorBrush x:Key="BrushFondoTarjeta" Color="#131B2A" />
+    <SolidColorBrush x:Key="BrushFondoItem" Color="#1A2338" />
+    <SolidColorBrush x:Key="BrushFondoItemHover" Color="#222D47" />
+
+    <SolidColorBrush x:Key="BrushBorde" Color="#26334D" />
+    <SolidColorBrush x:Key="BrushBordeHover" Color="#38486B" />
+    <SolidColorBrush x:Key="BrushBordeInput" Color="#2B3956" />
+    <SolidColorBrush x:Key="BrushBordeInputFocus" Color="#6366F1" />
+    <SolidColorBrush x:Key="BrushFondoInput" Color="#131B2A" />
+
+    <SolidColorBrush x:Key="BrushTextoPrimario" Color="#F8FAFC" />
+    <SolidColorBrush x:Key="BrushTextoSecundario" Color="#94A3B8" />
+    <SolidColorBrush x:Key="BrushTextoMuted" Color="#64748B" />
+
+    <SolidColorBrush x:Key="BrushAcento" Color="#6366F1" />
+    <SolidColorBrush x:Key="BrushAcentoHover" Color="#818CF8" />
+    <SolidColorBrush x:Key="BrushAcentoSuave" Color="#1E1B4B" />
+    <SolidColorBrush x:Key="BrushAcentoTextoSuave" Color="#C7D2FE" />
     <SolidColorBrush x:Key="BrushTextoAcento" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="BrushFondoBotonFiltro" Color="#1E293B" />
+    <SolidColorBrush x:Key="BrushTextoBotonFiltro" Color="#CBD5E1" />
+    <SolidColorBrush x:Key="BrushBotonHover" Color="#334155" />
+
+    <!-- Badges de Estado -->
+    <SolidColorBrush x:Key="BrushBadgeTotalFondo" Color="#1E1B4B" />
+    <SolidColorBrush x:Key="BrushBadgeTotalTexto" Color="#A5B4FC" />
+    <SolidColorBrush x:Key="BrushBadgePendienteFondo" Color="#451A03" />
+    <SolidColorBrush x:Key="BrushBadgePendienteTexto" Color="#FCD34D" />
+    <SolidColorBrush x:Key="BrushBadgeCompletadaFondo" Color="#052E16" />
+    <SolidColorBrush x:Key="BrushBadgeCompletadaTexto" Color="#86EFAC" />
+
+    <!-- Acciones de Peligro -->
+    <SolidColorBrush x:Key="BrushPeligroFondo" Color="#450A0A" />
+    <SolidColorBrush x:Key="BrushPeligroTexto" Color="#F87171" />
+    <SolidColorBrush x:Key="BrushPeligroHover" Color="#EF4444" />
+
+    <!-- ScrollBar -->
+    <SolidColorBrush x:Key="BrushScrollbarThumb" Color="#334155" />
+    <SolidColorBrush x:Key="BrushScrollbarThumbHover" Color="#475569" />
 
 </ResourceDictionary>

@@ -11,7 +11,7 @@ using TodoListWpf.Services;
 namespace TodoListWpf.ViewModels;
 
 /// <summary>
-/// ViewModel principal para la gestión reactiva de tareas y temas.
+/// ViewModel principal para la gestión reactiva de tareas, filtros, temas y estado visual.
 /// </summary>
 public class MainViewModel : ViewModelBase
 {
@@ -54,6 +54,9 @@ public class MainViewModel : ViewModelBase
             if (SetProperty(ref _strFiltroActual, value))
             {
                 ActualizarVistaFiltrada();
+                OnPropertyChanged(nameof(BoolEsFiltroTodas));
+                OnPropertyChanged(nameof(BoolEsFiltroPendientes));
+                OnPropertyChanged(nameof(BoolEsFiltroCompletadas));
             }
         }
     }
@@ -98,12 +101,20 @@ public class MainViewModel : ViewModelBase
     public int IntTareasPendientes => _colTareas.Count(t => !t.BoolCompletada);
     public int IntTareasCompletadas => _colTareas.Count(t => t.BoolCompletada);
 
+    public bool BoolTieneTareasFiltradas => _colTareasFiltradas.Count > 0;
+    public bool BoolListaVacia => _colTareasFiltradas.Count == 0;
+
+    public bool BoolEsFiltroTodas => _strFiltroActual == "Todas";
+    public bool BoolEsFiltroPendientes => _strFiltroActual == "Pendientes";
+    public bool BoolEsFiltroCompletadas => _strFiltroActual == "Completadas";
+
     public ICommand CmdAgregarTarea { get; }
     public ICommand CmdEliminarTarea { get; }
     public ICommand CmdAlternarCompletada { get; }
     public ICommand CmdLimpiarCompletadas { get; }
     public ICommand CmdCambiarFiltro { get; }
     public ICommand CmdAlternarTema { get; }
+    public ICommand CmdLimpiarBusqueda { get; }
 
     /// <summary>
     /// Tarea: Constructor por defecto que inicializa el servicio de persistencia JSON.
@@ -131,6 +142,7 @@ public class MainViewModel : ViewModelBase
         CmdLimpiarCompletadas = new RelayCommand(_ => EjecutarLimpiarCompletadas(), _ => IntTareasCompletadas > 0);
         CmdCambiarFiltro = new RelayCommand(objParam => StrFiltroActual = objParam?.ToString() ?? "Todas");
         CmdAlternarTema = new RelayCommand(_ => EjecutarAlternarTema());
+        CmdLimpiarBusqueda = new RelayCommand(_ => StrBusqueda = string.Empty, _ => !string.IsNullOrEmpty(StrBusqueda));
 
         CargarDatosIniciales();
     }
@@ -166,7 +178,7 @@ public class MainViewModel : ViewModelBase
             }
         };
 
-        _colTareas.Add(objNuevaTarea);
+        _colTareas.Insert(0, objNuevaTarea);
 
         StrNuevoTitulo = string.Empty;
         StrNuevaDescripcion = string.Empty;
@@ -287,6 +299,8 @@ public class MainViewModel : ViewModelBase
         }
 
         ColTareasFiltradas = new ObservableCollection<TareaModel>(query.ToList());
+        OnPropertyChanged(nameof(BoolTieneTareasFiltradas));
+        OnPropertyChanged(nameof(BoolListaVacia));
     }
 
     /// <summary>
@@ -299,8 +313,9 @@ public class MainViewModel : ViewModelBase
 
         if (colCargadas.Count == 0)
         {
-            _colTareas.Add(new TareaModel(1, "¡Bienvenido a tu Todo List!", "Puedes agregar, completar, buscar y eliminar tareas.", false));
-            _colTareas.Add(new TareaModel(2, "Revisar arquitectura MVVM", "Arquitectura desacoplada y fácil de extender.", true));
+            _colTareas.Add(new TareaModel(1, "¡Bienvenido a tu Todo List!", "Organiza tu día con este gestor rápido, elegante y moderno.", false));
+            _colTareas.Add(new TareaModel(2, "Explorar el Modo Oscuro", "Haz clic en el botón 🎨 Tema en la esquina superior derecha.", false));
+            _colTareas.Add(new TareaModel(3, "Completar primera tarea", "Haz clic en el círculo de verificación a la izquierda para tacharla.", true));
         }
         else
         {

@@ -195,4 +195,40 @@ public class MainViewModelTests
         // Assert
         Assert.NotEqual(boolEstadoInicial, objViewModel.BoolModoOscuro);
     }
+
+    /// <summary>
+    /// Tarea: Valida que las propiedades de empty state reflejen si hay o no tareas tras un filtro exhaustivo.
+    /// </summary>
+    [Fact]
+    public void ActualizarVistaFiltrada_SinCoincidencias_ActivaBoolListaVacia()
+    {
+        // Arrange
+        var srvFake = new FakePersistenciaMemoria();
+        var objViewModel = new MainViewModel(srvFake);
+
+        // Act
+        objViewModel.StrBusqueda = "termino_imposible_xyz_12345";
+
+        // Assert
+        Assert.True(objViewModel.BoolListaVacia);
+        Assert.False(objViewModel.BoolTieneTareasFiltradas);
+    }
+
+    /// <summary>
+    /// Tarea: Valida que el comando para limpiar búsqueda restablezca la cadena a vacía.
+    /// </summary>
+    [Fact]
+    public void CmdLimpiarBusqueda_ConTexto_RestableceStrBusquedaAVacio()
+    {
+        // Arrange
+        var srvFake = new FakePersistenciaMemoria();
+        var objViewModel = new MainViewModel(srvFake);
+        objViewModel.StrBusqueda = "filtro temporal";
+
+        // Act
+        objViewModel.CmdLimpiarBusqueda.Execute(null);
+
+        // Assert
+        Assert.Equal(string.Empty, objViewModel.StrBusqueda);
+    }
 }

@@ -6,49 +6,136 @@
         xmlns:converters="clr-namespace:TodoListWpf.Converters"
         xmlns:vm="clr-namespace:TodoListWpf.ViewModels"
         mc:Ignorable="d"
-        Title="Todo List - WPF Moderno (Claro / Oscuro)" 
-        Height="720" Width="880"
-        MinHeight="560" MinWidth="700"
+        Title="Todo List Studio" 
+        Height="760" Width="920"
+        MinHeight="600" MinWidth="740"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BrushFondoVentana}"
-        FontFamily="Segoe UI">
+        FontFamily="Segoe UI, Segoe UI Variable, Arial"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True">
 
     <Window.Resources>
         <converters:BoolToStrikethroughConverter x:Key="BoolToStrikethroughConverter" />
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 
-        <!-- Estilo de Tarjetas Dinámico -->
-        <Style x:Key="CardBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="{DynamicResource BrushFondoTarjeta}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorde}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="10" />
-            <Setter Property="Padding" Value="16" />
-            <Setter Property="Margin" Value="0,0,0,14" />
-            <Setter Property="Effect">
+        <!-- Estilo de Barra de Desplazamiento Delgada y Moderna -->
+        <Style x:Key="ModernScrollBarThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="10" Direction="270" ShadowDepth="2" Opacity="0.06" Color="#000000" />
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Background="{DynamicResource BrushScrollbarThumb}" CornerRadius="3" Margin="2,0" />
+                    </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Estilo de Cajas de Texto Adaptables -->
-        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Background" Value="{DynamicResource BrushFondoInput}" />
-            <Setter Property="Foreground" Value="{DynamicResource BrushTextoPrimario}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource BrushBordeInput}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CaretBrush" Value="{DynamicResource BrushTextoPrimario}" />
-            <Setter Property="Padding" Value="10,7" />
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Width" Value="8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid Background="Transparent">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ModernScrollBarThumb}" />
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <!-- Estilo de Botón Primario -->
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+        <!-- CheckBox Circular Moderno -->
+        <Style x:Key="ModernCircularCheckBox" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <!-- Círculo exterior -->
+                            <Border x:Name="OuterCircle"
+                                    Width="22" Height="22"
+                                    CornerRadius="11"
+                                    BorderThickness="2"
+                                    BorderBrush="{DynamicResource BrushBordeHover}"
+                                    Background="Transparent">
+                                <!-- Checkmark vectorial -->
+                                <Path x:Name="CheckGlyph"
+                                      Data="M 6 11 L 9.5 14.5 L 16 7.5"
+                                      Stroke="#FFFFFF"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      Opacity="0"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="OuterCircle" Property="BorderBrush" Value="{DynamicResource BrushAcento}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="OuterCircle" Property="Background" Value="{DynamicResource BrushAcento}" />
+                                <Setter TargetName="OuterCircle" Property="BorderBrush" Value="{DynamicResource BrushAcento}" />
+                                <Setter TargetName="CheckGlyph" Property="Opacity" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo de Tarjetas con Sombra Suave -->
+        <Style x:Key="ModernCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource BrushFondoTarjeta}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorde}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="16" Direction="270" ShadowDepth="2" Opacity="0.05" Color="#000000" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón Primario con Estilo Moderno -->
+        <Style x:Key="PrimaryModernButton" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource BrushAcento}" />
             <Setter Property="Foreground" Value="{DynamicResource BrushTextoAcento}" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Padding" Value="16,9" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="16,10" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="btnBorder" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="{DynamicResource BrushAcentoHover}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="btnBorder" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón Fantasma / Peligro -->
+        <Style x:Key="GhostDangerButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource BrushTextoMuted}" />
+            <Setter Property="Padding" Value="8,6" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
@@ -59,10 +146,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{DynamicResource BrushAcentoHover}" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Opacity" Value="0.6" />
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource BrushPeligroFondo}" />
+                                <Setter Property="Foreground" Value="{DynamicResource BrushPeligroTexto}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -70,48 +155,25 @@
             </Setter>
         </Style>
 
-        <!-- Estilo de Botón de Peligro / Eliminar -->
-        <Style x:Key="DangerButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#EF4444" />
-            <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Padding" Value="10,5" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="5" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#DC2626" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Estilo de Botón Filtro / Secundario -->
-        <Style x:Key="FilterButtonStyle" TargetType="Button">
+        <!-- Botón Píldora para Filtros -->
+        <Style x:Key="FilterPillButton" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource BrushFondoBotonFiltro}" />
             <Setter Property="Foreground" Value="{DynamicResource BrushTextoBotonFiltro}" />
             <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="Padding" Value="14,6" />
-            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Margin" Value="0,0,6,0" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="pillBorder" Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{DynamicResource BrushBotonHover}" />
+                                <Setter TargetName="pillBorder" Property="Background" Value="{DynamicResource BrushBotonHover}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -120,45 +182,50 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="24">
+    <Grid Margin="32,24,32,24">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" /> <!-- Cabecera y Estadísticas -->
-            <RowDefinition Height="Auto" /> <!-- Formulario de Entrada -->
-            <RowDefinition Height="Auto" /> <!-- Barra de Filtros y Búsqueda -->
-            <RowDefinition Height="*" />    <!-- Lista de Tareas -->
-            <RowDefinition Height="Auto" /> <!-- Pie -->
+            <RowDefinition Height="Auto" /> <!-- Cabecera principal -->
+            <RowDefinition Height="Auto" /> <!-- Tarjeta de Inserción -->
+            <RowDefinition Height="Auto" /> <!-- Controles de Filtros y Búsqueda -->
+            <RowDefinition Height="*" />    <!-- Lista de Tareas y Empty State -->
+            <RowDefinition Height="Auto" /> <!-- Pie de Aplicación -->
         </Grid.RowDefinitions>
 
-        <!-- 1. Cabecera, Contadores y Conmutador de Tema -->
-        <Grid Grid.Row="0" Margin="0,0,0,16">
+        <!-- 1. Cabecera Principal y Métricas -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!-- Título y Subtítulo -->
+            <!-- Título estilizado -->
             <StackPanel Grid.Column="0">
-                <TextBlock Text="📝 Mi Todo List" FontSize="26" FontWeight="Bold" 
-                           Foreground="{DynamicResource BrushTextoPrimario}" />
-                <TextBlock Text="Gestión ágil de tareas con WPF, MVVM y soporte Claro/Oscuro" 
-                           FontSize="13" Foreground="{DynamicResource BrushTextoSecundario}" Margin="0,2,0,0" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="{DynamicResource BrushAcentoSuave}" CornerRadius="8" Width="36" Height="36" Margin="0,0,12,0">
+                        <TextBlock Text="⚡" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel>
+                        <TextBlock Text="Todo List Studio" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource BrushTextoPrimario}" />
+                        <TextBlock Text="Organiza tus tareas con fluidez, estilo y foco" FontSize="12" Foreground="{DynamicResource BrushTextoSecundario}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
 
-            <!-- Contadores y Botón de Tema -->
+            <!-- Botón Tema y Badges -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <!-- Botón de Conmutación de Tema -->
+                <!-- Conmutador de Tema -->
                 <Button Command="{Binding CmdAlternarTema}" 
-                        Style="{StaticResource FilterButtonStyle}" 
-                        Padding="12,6" Margin="0,0,12,0" ToolTip="Alternar entre tema Claro y Oscuro">
+                        Style="{StaticResource FilterPillButton}" 
+                        Padding="12,7" Margin="0,0,12,0" ToolTip="Conmutar entre tema Claro y Oscuro">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🎨 Tema: " Foreground="{DynamicResource BrushTextoBotonFiltro}" />
-                        <TextBlock FontWeight="Bold" Foreground="{DynamicResource BrushTextoBotonFiltro}">
+                        <TextBlock Text="🎨 " FontSize="12" />
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource BrushTextoBotonFiltro}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Text" Value="☀️ Claro" />
+                                    <Setter Property="Text" Value="Tema Claro" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding BoolModoOscuro}" Value="True">
-                                            <Setter Property="Text" Value="🌙 Oscuro" />
+                                            <Setter Property="Text" Value="Tema Oscuro" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -167,30 +234,30 @@
                     </StackPanel>
                 </Button>
 
-                <!-- Badges de Estadísticas -->
-                <Border Background="#E0E7FF" CornerRadius="8" Padding="12,6" Margin="0,0,8,0">
+                <!-- Badges de Estadísticas con Colores Semánticos -->
+                <Border Background="{DynamicResource BrushBadgeTotalFondo}" CornerRadius="10" Padding="12,6" Margin="0,0,6,0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Total: " Foreground="#4338CA" FontWeight="Medium" />
-                        <TextBlock Text="{Binding IntTotalTareas}" Foreground="#4338CA" FontWeight="Bold" />
+                        <TextBlock Text="Total " FontSize="11" Foreground="{DynamicResource BrushBadgeTotalTexto}" FontWeight="Medium" />
+                        <TextBlock Text="{Binding IntTotalTareas}" FontSize="12" Foreground="{DynamicResource BrushBadgeTotalTexto}" FontWeight="Bold" Margin="4,0,0,0" />
                     </StackPanel>
                 </Border>
-                <Border Background="#FEF3C7" CornerRadius="8" Padding="12,6" Margin="0,0,8,0">
+                <Border Background="{DynamicResource BrushBadgePendienteFondo}" CornerRadius="10" Padding="12,6" Margin="0,0,6,0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Pendientes: " Foreground="#B45309" FontWeight="Medium" />
-                        <TextBlock Text="{Binding IntTareasPendientes}" Foreground="#B45309" FontWeight="Bold" />
+                        <TextBlock Text="Pendientes " FontSize="11" Foreground="{DynamicResource BrushBadgePendienteTexto}" FontWeight="Medium" />
+                        <TextBlock Text="{Binding IntTareasPendientes}" FontSize="12" Foreground="{DynamicResource BrushBadgePendienteTexto}" FontWeight="Bold" Margin="4,0,0,0" />
                     </StackPanel>
                 </Border>
-                <Border Background="#D1FAE5" CornerRadius="8" Padding="12,6">
+                <Border Background="{DynamicResource BrushBadgeCompletadaFondo}" CornerRadius="10" Padding="12,6">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Completadas: " Foreground="#065F46" FontWeight="Medium" />
-                        <TextBlock Text="{Binding IntTareasCompletadas}" Foreground="#065F46" FontWeight="Bold" />
+                        <TextBlock Text="Hechas " FontSize="11" Foreground="{DynamicResource BrushBadgeCompletadaTexto}" FontWeight="Medium" />
+                        <TextBlock Text="{Binding IntTareasCompletadas}" FontSize="12" Foreground="{DynamicResource BrushBadgeCompletadaTexto}" FontWeight="Bold" Margin="4,0,0,0" />
                     </StackPanel>
                 </Border>
             </StackPanel>
         </Grid>
 
-        <!-- 2. Formulario para Agregar Tarea -->
-        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}">
+        <!-- 2. Formulario de Nueva Tarea (Card Elevada) -->
+        <Border Grid.Row="1" Style="{StaticResource ModernCardStyle}" Padding="18" Margin="0,0,0,18">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -201,130 +268,286 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Input Título -->
-                <TextBox Grid.Row="0" Grid.Column="0"
-                         Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding StrNuevoTitulo, UpdateSourceTrigger=PropertyChanged}"
-                         FontSize="14" Margin="0,0,12,8"
-                         VerticalContentAlignment="Center" />
+                <!-- Input Título con Watermark -->
+                <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,14,10">
+                    <Border Background="{DynamicResource BrushFondoInput}"
+                            BorderBrush="{DynamicResource BrushBordeInput}"
+                            BorderThickness="1" CornerRadius="8">
+                        <Grid>
+                            <TextBox Text="{Binding StrNuevoTitulo, UpdateSourceTrigger=PropertyChanged}"
+                                     FontSize="14" FontWeight="Medium"
+                                     Foreground="{DynamicResource BrushTextoPrimario}"
+                                     Background="Transparent" BorderThickness="0"
+                                     Padding="14,10"
+                                     VerticalContentAlignment="Center"
+                                     CaretBrush="{DynamicResource BrushAcento}" />
+                            <TextBlock Text="¿Qué necesitas lograr hoy? (Escribe el título y presiona Enter)"
+                                       Foreground="{DynamicResource BrushTextoMuted}"
+                                       FontSize="13" Margin="14,0,0,0"
+                                       VerticalAlignment="Center" IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StrNuevoTitulo}" Value="">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </Grid>
 
-                <!-- Botón Agregar -->
+                <!-- Botón Agregar con Icono -->
                 <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
-                        Content="➕ Agregar Tarea"
-                        Style="{StaticResource PrimaryButtonStyle}"
+                        Style="{StaticResource PrimaryModernButton}"
                         Command="{Binding CmdAgregarTarea}"
                         IsDefault="True"
-                        Height="76" Width="140" />
+                        Height="88" Width="148">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                        <TextBlock Text="✨" FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,4" />
+                        <TextBlock Text="Agregar Tarea" FontWeight="Bold" FontSize="13" />
+                    </StackPanel>
+                </Button>
 
-                <!-- Input Descripción -->
-                <TextBox Grid.Row="1" Grid.Column="0"
-                         Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding StrNuevaDescripcion, UpdateSourceTrigger=PropertyChanged}"
-                         FontSize="13" Margin="0,0,12,0"
-                         VerticalContentAlignment="Center" />
+                <!-- Input Descripción con Watermark -->
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,14,0">
+                    <Border Background="{DynamicResource BrushFondoInput}"
+                            BorderBrush="{DynamicResource BrushBordeInput}"
+                            BorderThickness="1" CornerRadius="8">
+                        <Grid>
+                            <TextBox Text="{Binding StrNuevaDescripcion, UpdateSourceTrigger=PropertyChanged}"
+                                     FontSize="13" Foreground="{DynamicResource BrushTextoPrimario}"
+                                     Background="Transparent" BorderThickness="0"
+                                     Padding="14,8"
+                                     VerticalContentAlignment="Center"
+                                     CaretBrush="{DynamicResource BrushAcento}" />
+                            <TextBlock Text="Notas o contexto adicional (opcional)..."
+                                       Foreground="{DynamicResource BrushTextoMuted}"
+                                       FontSize="12" Margin="14,0,0,0"
+                                       VerticalAlignment="Center" IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StrNuevaDescripcion}" Value="">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </Grid>
             </Grid>
         </Border>
 
-        <!-- 3. Barra de Filtros y Búsqueda -->
-        <Grid Grid.Row="2" Margin="0,0,0,12">
+        <!-- 3. Barra de Filtros y Búsqueda Estilizada -->
+        <Grid Grid.Row="2" Margin="0,0,0,14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Filtros por estado -->
+            <!-- Píldoras de Filtro -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                 <Button Content="Todas" 
-                        Style="{StaticResource FilterButtonStyle}" 
-                        Command="{Binding CmdCambiarFiltro}" CommandParameter="Todas" />
+                        Style="{StaticResource FilterPillButton}" 
+                        Command="{Binding CmdCambiarFiltro}" CommandParameter="Todas">
+                    <Button.Triggers>
+                        <!-- Feedback visual -->
+                    </Button.Triggers>
+                </Button>
                 <Button Content="Pendientes" 
-                        Style="{StaticResource FilterButtonStyle}" 
+                        Style="{StaticResource FilterPillButton}" 
                         Command="{Binding CmdCambiarFiltro}" CommandParameter="Pendientes" />
                 <Button Content="Completadas" 
-                        Style="{StaticResource FilterButtonStyle}" 
+                        Style="{StaticResource FilterPillButton}" 
                         Command="{Binding CmdCambiarFiltro}" CommandParameter="Completadas" />
-                <TextBlock Text="{Binding StrFiltroActual, StringFormat='(Filtro: {0})'}" 
-                           VerticalAlignment="Center" Foreground="{DynamicResource BrushTextoSecundario}" FontSize="12" Margin="4,0,0,0"/>
+
+                <!-- Indicador de filtro activo -->
+                <Border Background="{DynamicResource BrushAcentoSuave}" CornerRadius="12" Padding="10,4" Margin="6,0,0,0">
+                    <TextBlock Text="{Binding StrFiltroActual, StringFormat='Vista activa: {0}'}" 
+                               FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource BrushAcentoTextoSuave}" />
+                </Border>
             </StackPanel>
 
-            <!-- Caja de búsqueda -->
-            <TextBox Grid.Column="1"
-                     Style="{StaticResource ModernTextBoxStyle}"
-                     Text="{Binding StrBusqueda, UpdateSourceTrigger=PropertyChanged}"
-                     HorizontalAlignment="Right" Width="240"
-                     FontSize="13" />
+            <!-- Barra de Búsqueda con Icono -->
+            <Border Grid.Column="1" HorizontalAlignment="Right" Width="260"
+                    Background="{DynamicResource BrushFondoInput}"
+                    BorderBrush="{DynamicResource BrushBordeInput}"
+                    BorderThickness="1" CornerRadius="16" Padding="10,5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="🔍" FontSize="11" Margin="0,0,6,0" VerticalAlignment="Center" />
+
+                    <TextBox Grid.Column="1"
+                             Text="{Binding StrBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent" BorderThickness="0"
+                             Foreground="{DynamicResource BrushTextoPrimario}"
+                             FontSize="12" VerticalContentAlignment="Center"
+                             CaretBrush="{DynamicResource BrushAcento}" />
+
+                    <TextBlock Grid.Column="1" Text="Buscar tarea..."
+                               Foreground="{DynamicResource BrushTextoMuted}"
+                               FontSize="12" VerticalAlignment="Center" IsHitTestVisible="False">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding StrBusqueda}" Value="">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Botón Limpiar Búsqueda -->
+                    <Button Grid.Column="2" Content="✕" 
+                            Command="{Binding CmdLimpiarBusqueda}"
+                            Foreground="{DynamicResource BrushTextoMuted}"
+                            Background="Transparent" BorderThickness="0"
+                            Cursor="Hand" FontSize="10" Padding="4,0"
+                            Visibility="{Binding StrBusqueda, Converter={StaticResource BoolToVisConverter}}" />
+                </Grid>
+            </Border>
         </Grid>
 
-        <!-- 4. Lista de Tareas -->
-        <Border Grid.Row="3" Background="{DynamicResource BrushFondoTarjeta}" 
-                BorderBrush="{DynamicResource BrushBorde}" BorderThickness="1"
-                CornerRadius="10" Padding="8" Margin="0,0,0,12">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding ColTareasFiltradas}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="4,4,4,6" Padding="12" 
-                                    Background="{DynamicResource BrushFondoItem}" 
-                                    BorderBrush="{DynamicResource BrushBorde}" BorderThickness="1"
-                                    CornerRadius="8">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+        <!-- 4. Contenedor de Lista de Tareas y Empty State -->
+        <Border Grid.Row="3" Style="{StaticResource ModernCardStyle}" Padding="12" Margin="0,0,0,16">
+            <Grid>
+                <!-- Empty State (Cuando la lista filtrada no tiene elementos) -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,40"
+                            Visibility="{Binding BoolListaVacia, Converter={StaticResource BoolToVisConverter}}">
+                    <Border Background="{DynamicResource BrushAcentoSuave}" Width="64" Height="64" CornerRadius="32"
+                            HorizontalAlignment="Center" Margin="0,0,0,14">
+                        <TextBlock Text="🎯" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="¡No hay tareas en esta vista!" 
+                               FontSize="16" FontWeight="Bold" 
+                               Foreground="{DynamicResource BrushTextoPrimario}" HorizontalAlignment="Center" />
+                    <TextBlock Text="Agrega una nueva tarea arriba o selecciona otro filtro para explorar." 
+                               FontSize="13" Foreground="{DynamicResource BrushTextoSecundario}" 
+                               HorizontalAlignment="Center" Margin="0,4,0,0" />
+                </StackPanel>
 
-                                    <!-- Checkbox de completado -->
-                                    <CheckBox Grid.Column="0" 
-                                              IsChecked="{Binding BoolCompletada, Mode=TwoWay}"
-                                              VerticalAlignment="Center" Margin="0,0,12,0"
-                                              Cursor="Hand" />
+                <!-- ScrollViewer con ItemsControl -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              Visibility="{Binding BoolTieneTareasFiltradas, Converter={StaticResource BoolToVisConverter}}">
+                    <ItemsControl ItemsSource="{Binding ColTareasFiltradas}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Tarjeta Individual de Tarea -->
+                                <Border Margin="4,4,4,8" Padding="14,12"
+                                        Background="{DynamicResource BrushFondoItem}"
+                                        BorderBrush="{DynamicResource BrushBorde}"
+                                        BorderThickness="1" CornerRadius="10">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource BrushBordeHover}" />
+                                                    <Setter Property="Background" Value="{DynamicResource BrushFondoItemHover}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
 
-                                    <!-- Textos de la Tarea -->
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center"
-                                                Opacity="{Binding BoolCompletada, Converter={StaticResource BoolToOpacityConverter}}">
-                                        <TextBlock Text="{Binding StrTituloTarea}" 
-                                                   FontSize="15" FontWeight="SemiBold" 
-                                                   Foreground="{DynamicResource BrushTextoPrimario}"
-                                                   TextDecorations="{Binding BoolCompletada, Converter={StaticResource BoolToStrikethroughConverter}}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" /> <!-- Checkbox Circular -->
+                                            <ColumnDefinition Width="*" />    <!-- Contenido Textual -->
+                                            <ColumnDefinition Width="Auto" /> <!-- Botón de Borrado -->
+                                        </Grid.ColumnDefinitions>
 
-                                        <TextBlock Text="{Binding StrDescripcionTarea}" 
-                                                   FontSize="13" Foreground="{DynamicResource BrushTextoSecundario}" 
-                                                   Margin="0,2,0,4" TextWrapping="Wrap" />
+                                        <!-- CheckBox Circular -->
+                                        <CheckBox Grid.Column="0"
+                                                  IsChecked="{Binding BoolCompletada, Mode=TwoWay}"
+                                                  Style="{StaticResource ModernCircularCheckBox}"
+                                                  Margin="0,0,14,0" />
 
-                                        <TextBlock Text="{Binding DtmFechaCreacion, StringFormat='Creado: {0:dd/MM/yyyy HH:mm}'}" 
-                                                   FontSize="11" Foreground="{DynamicResource BrushTextoMuted}" />
-                                    </StackPanel>
+                                        <!-- Título, Descripción y Metadatos -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center"
+                                                    Opacity="{Binding BoolCompletada, Converter={StaticResource BoolToOpacityConverter}}">
+                                            
+                                            <!-- Título de la Tarea -->
+                                            <TextBlock Text="{Binding StrTituloTarea}" 
+                                                       FontSize="15" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource BrushTextoPrimario}"
+                                                       TextDecorations="{Binding BoolCompletada, Converter={StaticResource BoolToStrikethroughConverter}}"
+                                                       TextTrimming="CharacterEllipsis" />
 
-                                    <!-- Botón Eliminar -->
-                                    <Button Grid.Column="2" Content="🗑️ Eliminar"
-                                            Style="{StaticResource DangerButtonStyle}"
-                                            Command="{Binding DataContext.CmdEliminarTarea, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"
-                                            VerticalAlignment="Center" Margin="8,0,0,0" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                                            <!-- Descripción si existe -->
+                                            <TextBlock Text="{Binding StrDescripcionTarea}" 
+                                                       FontSize="13" Foreground="{DynamicResource BrushTextoSecundario}"
+                                                       Margin="0,4,0,6" TextWrapping="Wrap">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="Text" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+                                            <!-- Metadata: Fecha de Creación con Badge -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                <TextBlock Text="📅 Creada: " FontSize="11" Foreground="{DynamicResource BrushTextoMuted}" />
+                                                <TextBlock Text="{Binding DtmFechaCreacion, StringFormat='{}{0:dd MMM yyyy, HH:mm}'}" 
+                                                           FontSize="11" FontWeight="Medium" Foreground="{DynamicResource BrushTextoMuted}" />
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Botón de Borrado Minimalista -->
+                                        <Button Grid.Column="2"
+                                                Style="{StaticResource GhostDangerButton}"
+                                                Command="{Binding DataContext.CmdEliminarTarea, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Eliminar esta tarea"
+                                                VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🗑️" FontSize="13" VerticalAlignment="Center" />
+                                                <TextBlock Text=" Borrar" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Margin="2,0,0,0" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
         </Border>
 
-        <!-- 5. Barra Inferior / Acciones secundarias -->
+        <!-- 5. Barra Inferior / Pie de Aplicación -->
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" 
-                       Text="Consejo: Usa el botón 'Tema' para alternar entre Claro y Oscuro según tu preferencia." 
-                       VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource BrushTextoSecundario}" />
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="💡 Atajo: Escribe el título y presiona Enter para añadir rápidamente." 
+                           FontSize="12" Foreground="{DynamicResource BrushTextoSecundario}" />
+            </StackPanel>
 
+            <!-- Acción de Limpieza de Completadas -->
             <Button Grid.Column="1" 
-                    Content="🧹 Limpiar completadas" 
-                    Style="{StaticResource FilterButtonStyle}"
-                    Command="{Binding CmdLimpiarCompletadas}" />
+                    Content="🧹 Limpiar Completadas" 
+                    Style="{StaticResource FilterPillButton}"
+                    Command="{Binding CmdLimpiarCompletadas}"
+                    Padding="14,7" FontWeight="SemiBold" />
         </Grid>
     </Grid>
 </Window>
