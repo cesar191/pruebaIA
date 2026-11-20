@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace TodoListWpf.Models;
 
 /// <summary>
-/// Modelo que representa una tarea individual en la lista.
+/// Modelo observable que representa una tarea individual en la lista.
 /// </summary>
 public class TareaModel : INotifyPropertyChanged
 {
@@ -47,10 +47,16 @@ public class TareaModel : INotifyPropertyChanged
         set => SetProperty(ref _dtmFechaCreacion, value);
     }
 
+    /// <summary>
+    /// Tarea: Inicializa una tarea vacía para serialización.
+    /// </summary>
     public TareaModel()
     {
     }
 
+    /// <summary>
+    /// Tarea: Inicializa una nueva tarea con título, descripción y estado inicial.
+    /// </summary>
     public TareaModel(int intId, string strTitulo, string strDescripcion = "", bool boolCompletada = false)
     {
         _intIdTarea = intId;
@@ -60,12 +66,15 @@ public class TareaModel : INotifyPropertyChanged
         _dtmFechaCreacion = DateTime.Now;
     }
 
-    protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    /// <summary>
+    /// Tarea: Asigna un valor y notifica el cambio a la vista si difiere del actual.
+    /// </summary>
+    protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? strNombrePropiedad = null)
     {
         if (!EqualityComparer<T>.Default.Equals(field, value))
         {
             field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strNombrePropiedad));
         }
     }
 }

@@ -10,6 +10,9 @@ namespace TodoListWpf.Converters;
 /// </summary>
 public class BoolToStrikethroughConverter : IValueConverter
 {
+    /// <summary>
+    /// Tarea: Retorna decoración Strikethrough si la tarea está completada, o null si está pendiente.
+    /// </summary>
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool boolCompletada && boolCompletada)
@@ -20,7 +23,10 @@ public class BoolToStrikethroughConverter : IValueConverter
         return null;
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    /// <summary>
+    /// Tarea: Operación inversa no requerida para el enlace de decoración de texto.
+    /// </summary>
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

@@ -8,6 +8,9 @@ namespace TodoListWpf;
 /// </summary>
 public partial class MainWindow : Window
 {
+    /// <summary>
+    /// Tarea: Inicializa los componentes de la vista y vincula el DataContext con el ViewModel principal.
+    /// </summary>
     public MainWindow()
     {
         InitializeComponent();

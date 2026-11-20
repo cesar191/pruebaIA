@@ -7,7 +7,7 @@ using TodoListWpf.Models;
 namespace TodoListWpf.Services;
 
 /// <summary>
-/// Implementación de persistencia de tareas utilizando archivos JSON locales.
+/// Servicio de persistencia en disco mediante archivos en formato JSON.
 /// </summary>
 public class ServicioPersistenciaJson : IServicioPersistencia
 {
@@ -16,6 +16,9 @@ public class ServicioPersistenciaJson : IServicioPersistencia
         WriteIndented = true
     };
 
+    /// <summary>
+    /// Tarea: Carga y deserializa las tareas almacenadas en el archivo JSON especificado.
+    /// </summary>
     public List<TareaModel> CargarTareas(string strRutaArchivo)
     {
         try
@@ -35,6 +38,9 @@ public class ServicioPersistenciaJson : IServicioPersistencia
         }
     }
 
+    /// <summary>
+    /// Tarea: Serializa y escribe la colección de tareas en el archivo JSON especificado.
+    /// </summary>
     public void GuardarTareas(string strRutaArchivo, IEnumerable<TareaModel> colTareasAGuardar)
     {
         try
@@ -50,7 +56,7 @@ public class ServicioPersistenciaJson : IServicioPersistencia
         }
         catch
         {
-            // Manejo silencioso o logging de fallo de guardado
+            // Manejo seguro ante restricciones de escritura
         }
     }
 }

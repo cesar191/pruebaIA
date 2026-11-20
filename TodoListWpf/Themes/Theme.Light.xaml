@@ -1,0 +1,21 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Paleta de Colores - Modo Claro -->
+    <SolidColorBrush x:Key="BrushFondoVentana" Color="#F4F6F9" />
+    <SolidColorBrush x:Key="BrushFondoTarjeta" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="BrushFondoItem" Color="#F9FAFB" />
+    <SolidColorBrush x:Key="BrushBorde" Color="#E5E7EB" />
+    <SolidColorBrush x:Key="BrushBordeInput" Color="#D1D5DB" />
+    <SolidColorBrush x:Key="BrushFondoInput" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="BrushTextoPrimario" Color="#111827" />
+    <SolidColorBrush x:Key="BrushTextoSecundario" Color="#4B5563" />
+    <SolidColorBrush x:Key="BrushTextoMuted" Color="#9CA3AF" />
+    <SolidColorBrush x:Key="BrushFondoBotonFiltro" Color="#E5E7EB" />
+    <SolidColorBrush x:Key="BrushTextoBotonFiltro" Color="#374151" />
+    <SolidColorBrush x:Key="BrushBotonHover" Color="#D1D5DB" />
+    <SolidColorBrush x:Key="BrushAcento" Color="#3B82F6" />
+    <SolidColorBrush x:Key="BrushAcentoHover" Color="#2563EB" />
+    <SolidColorBrush x:Key="BrushTextoAcento" Color="#FFFFFF" />
+
+</ResourceDictionary>

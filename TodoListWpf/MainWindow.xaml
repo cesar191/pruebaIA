@@ -6,11 +6,11 @@
         xmlns:converters="clr-namespace:TodoListWpf.Converters"
         xmlns:vm="clr-namespace:TodoListWpf.ViewModels"
         mc:Ignorable="d"
-        Title="Todo List - WPF Moderno" 
-        Height="700" Width="850"
-        MinHeight="550" MinWidth="680"
+        Title="Todo List - WPF Moderno (Claro / Oscuro)" 
+        Height="720" Width="880"
+        MinHeight="560" MinWidth="700"
         WindowStartupLocation="CenterScreen"
-        Background="#F4F6F9"
+        Background="{DynamicResource BrushFondoVentana}"
         FontFamily="Segoe UI">
 
     <Window.Resources>
@@ -18,23 +18,35 @@
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 
-        <!-- Estilo de Tarjetas -->
+        <!-- Estilo de Tarjetas Dinámico -->
         <Style x:Key="CardBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="#FFFFFF" />
+            <Setter Property="Background" Value="{DynamicResource BrushFondoTarjeta}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorde}" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="16" />
             <Setter Property="Margin" Value="0,0,0,14" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="12" Direction="270" ShadowDepth="2" Opacity="0.08" Color="#000000" />
+                    <DropShadowEffect BlurRadius="10" Direction="270" ShadowDepth="2" Opacity="0.06" Color="#000000" />
                 </Setter.Value>
             </Setter>
         </Style>
 
+        <!-- Estilo de Cajas de Texto Adaptables -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource BrushFondoInput}" />
+            <Setter Property="Foreground" Value="{DynamicResource BrushTextoPrimario}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBordeInput}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CaretBrush" Value="{DynamicResource BrushTextoPrimario}" />
+            <Setter Property="Padding" Value="10,7" />
+        </Style>
+
         <!-- Estilo de Botón Primario -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#3B82F6" />
-            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Background" Value="{DynamicResource BrushAcento}" />
+            <Setter Property="Foreground" Value="{DynamicResource BrushTextoAcento}" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Padding" Value="16,9" />
             <Setter Property="BorderThickness" Value="0" />
@@ -47,11 +59,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2563EB" />
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource BrushAcentoHover}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#93C5FD" />
-                                <Setter Property="Foreground" Value="#F3F4F6" />
+                                <Setter TargetName="border" Property="Opacity" Value="0.6" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -83,10 +94,10 @@
             </Setter>
         </Style>
 
-        <!-- Estilo de Filtro Pill -->
+        <!-- Estilo de Botón Filtro / Secundario -->
         <Style x:Key="FilterButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#E5E7EB" />
-            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Background" Value="{DynamicResource BrushFondoBotonFiltro}" />
+            <Setter Property="Foreground" Value="{DynamicResource BrushTextoBotonFiltro}" />
             <Setter Property="FontWeight" Value="Medium" />
             <Setter Property="Padding" Value="14,6" />
             <Setter Property="Margin" Value="0,0,8,0" />
@@ -100,7 +111,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#D1D5DB" />
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource BrushBotonHover}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -112,26 +123,51 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /> <!-- Cabecera y Estadísticas -->
-            <RowDefinition Height="Auto" /> <!-- Formulario de Nueva Tarea -->
+            <RowDefinition Height="Auto" /> <!-- Formulario de Entrada -->
             <RowDefinition Height="Auto" /> <!-- Barra de Filtros y Búsqueda -->
             <RowDefinition Height="*" />    <!-- Lista de Tareas -->
-            <RowDefinition Height="Auto" /> <!-- Pie con Acciones -->
+            <RowDefinition Height="Auto" /> <!-- Pie -->
         </Grid.RowDefinitions>
 
-        <!-- 1. Cabecera y Contadores -->
+        <!-- 1. Cabecera, Contadores y Conmutador de Tema -->
         <Grid Grid.Row="0" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
+            <!-- Título y Subtítulo -->
             <StackPanel Grid.Column="0">
-                <TextBlock Text="📝 Mi Todo List" FontSize="26" FontWeight="Bold" Foreground="#1F2937" />
-                <TextBlock Text="Gestión ágil de tareas con WPF y arquitectura MVVM" FontSize="13" Foreground="#6B7280" Margin="0,2,0,0" />
+                <TextBlock Text="📝 Mi Todo List" FontSize="26" FontWeight="Bold" 
+                           Foreground="{DynamicResource BrushTextoPrimario}" />
+                <TextBlock Text="Gestión ágil de tareas con WPF, MVVM y soporte Claro/Oscuro" 
+                           FontSize="13" Foreground="{DynamicResource BrushTextoSecundario}" Margin="0,2,0,0" />
             </StackPanel>
 
-            <!-- Badges de Estadísticas -->
+            <!-- Contadores y Botón de Tema -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Botón de Conmutación de Tema -->
+                <Button Command="{Binding CmdAlternarTema}" 
+                        Style="{StaticResource FilterButtonStyle}" 
+                        Padding="12,6" Margin="0,0,12,0" ToolTip="Alternar entre tema Claro y Oscuro">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🎨 Tema: " Foreground="{DynamicResource BrushTextoBotonFiltro}" />
+                        <TextBlock FontWeight="Bold" Foreground="{DynamicResource BrushTextoBotonFiltro}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="☀️ Claro" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BoolModoOscuro}" Value="True">
+                                            <Setter Property="Text" Value="🌙 Oscuro" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Button>
+
+                <!-- Badges de Estadísticas -->
                 <Border Background="#E0E7FF" CornerRadius="8" Padding="12,6" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Total: " Foreground="#4338CA" FontWeight="Medium" />
@@ -167,11 +203,10 @@
 
                 <!-- Input Título -->
                 <TextBox Grid.Row="0" Grid.Column="0"
+                         Style="{StaticResource ModernTextBoxStyle}"
                          Text="{Binding StrNuevoTitulo, UpdateSourceTrigger=PropertyChanged}"
-                         FontSize="14" Padding="10,8" Margin="0,0,12,8"
-                         BorderBrush="#D1D5DB" BorderThickness="1"
-                         VerticalContentAlignment="Center"
-                         Tag="¿Qué necesitas hacer? (Escribe el título de la tarea)" />
+                         FontSize="14" Margin="0,0,12,8"
+                         VerticalContentAlignment="Center" />
 
                 <!-- Botón Agregar -->
                 <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
@@ -179,15 +214,14 @@
                         Style="{StaticResource PrimaryButtonStyle}"
                         Command="{Binding CmdAgregarTarea}"
                         IsDefault="True"
-                        Height="78" Width="140" />
+                        Height="76" Width="140" />
 
                 <!-- Input Descripción -->
                 <TextBox Grid.Row="1" Grid.Column="0"
+                         Style="{StaticResource ModernTextBoxStyle}"
                          Text="{Binding StrNuevaDescripcion, UpdateSourceTrigger=PropertyChanged}"
-                         FontSize="13" Padding="10,6" Margin="0,0,12,0"
-                         BorderBrush="#D1D5DB" BorderThickness="1"
-                         VerticalContentAlignment="Center"
-                         Tag="Notas o detalles adicionales (opcional)" />
+                         FontSize="13" Margin="0,0,12,0"
+                         VerticalContentAlignment="Center" />
             </Grid>
         </Border>
 
@@ -210,24 +244,29 @@
                         Style="{StaticResource FilterButtonStyle}" 
                         Command="{Binding CmdCambiarFiltro}" CommandParameter="Completadas" />
                 <TextBlock Text="{Binding StrFiltroActual, StringFormat='(Filtro: {0})'}" 
-                           VerticalAlignment="Center" Foreground="#6B7280" FontSize="12" Margin="4,0,0,0"/>
+                           VerticalAlignment="Center" Foreground="{DynamicResource BrushTextoSecundario}" FontSize="12" Margin="4,0,0,0"/>
             </StackPanel>
 
             <!-- Caja de búsqueda -->
             <TextBox Grid.Column="1"
+                     Style="{StaticResource ModernTextBoxStyle}"
                      Text="{Binding StrBusqueda, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalAlignment="Right" Width="240"
-                     Padding="8,6" FontSize="13"
-                     BorderBrush="#D1D5DB" BorderThickness="1" />
+                     FontSize="13" />
         </Grid>
 
         <!-- 4. Lista de Tareas -->
-        <Border Grid.Row="3" Background="#FFFFFF" CornerRadius="10" Padding="8" Margin="0,0,0,12">
+        <Border Grid.Row="3" Background="{DynamicResource BrushFondoTarjeta}" 
+                BorderBrush="{DynamicResource BrushBorde}" BorderThickness="1"
+                CornerRadius="10" Padding="8" Margin="0,0,0,12">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding ColTareasFiltradas}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="4,4,4,6" Padding="12" Background="#F9FAFB" CornerRadius="8" BorderBrush="#E5E7EB" BorderThickness="1">
+                            <Border Margin="4,4,4,6" Padding="12" 
+                                    Background="{DynamicResource BrushFondoItem}" 
+                                    BorderBrush="{DynamicResource BrushBorde}" BorderThickness="1"
+                                    CornerRadius="8">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -245,15 +284,16 @@
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center"
                                                 Opacity="{Binding BoolCompletada, Converter={StaticResource BoolToOpacityConverter}}">
                                         <TextBlock Text="{Binding StrTituloTarea}" 
-                                                   FontSize="15" FontWeight="SemiBold" Foreground="#111827"
+                                                   FontSize="15" FontWeight="SemiBold" 
+                                                   Foreground="{DynamicResource BrushTextoPrimario}"
                                                    TextDecorations="{Binding BoolCompletada, Converter={StaticResource BoolToStrikethroughConverter}}" />
 
                                         <TextBlock Text="{Binding StrDescripcionTarea}" 
-                                                   FontSize="13" Foreground="#4B5563" Margin="0,2,0,4"
-                                                   TextWrapping="Wrap" />
+                                                   FontSize="13" Foreground="{DynamicResource BrushTextoSecundario}" 
+                                                   Margin="0,2,0,4" TextWrapping="Wrap" />
 
                                         <TextBlock Text="{Binding DtmFechaCreacion, StringFormat='Creado: {0:dd/MM/yyyy HH:mm}'}" 
-                                                   FontSize="11" Foreground="#9CA3AF" />
+                                                   FontSize="11" Foreground="{DynamicResource BrushTextoMuted}" />
                                     </StackPanel>
 
                                     <!-- Botón Eliminar -->
@@ -278,8 +318,8 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" 
-                       Text="Consejo: Usa las casillas para marcar tareas y los botones de filtro para organizarte." 
-                       VerticalAlignment="Center" FontSize="12" Foreground="#6B7280" />
+                       Text="Consejo: Usa el botón 'Tema' para alternar entre Claro y Oscuro según tu preferencia." 
+                       VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource BrushTextoSecundario}" />
 
             <Button Grid.Column="1" 
                     Content="🧹 Limpiar completadas" 

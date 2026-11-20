@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using TodoListWpf.Commands;
 using TodoListWpf.Models;
@@ -10,7 +11,7 @@ using TodoListWpf.Services;
 namespace TodoListWpf.ViewModels;
 
 /// <summary>
-/// ViewModel principal para la gestión de la lista de tareas.
+/// ViewModel principal para la gestión reactiva de tareas y temas.
 /// </summary>
 public class MainViewModel : ViewModelBase
 {
@@ -21,6 +22,7 @@ public class MainViewModel : ViewModelBase
     private string _strNuevaDescripcion = string.Empty;
     private string _strFiltroActual = "Todas";
     private string _strBusqueda = string.Empty;
+    private bool _boolModoOscuro;
     private TareaModel? _objTareaSeleccionada;
 
     private ObservableCollection<TareaModel> _colTareas = new();
@@ -68,6 +70,12 @@ public class MainViewModel : ViewModelBase
         }
     }
 
+    public bool BoolModoOscuro
+    {
+        get => _boolModoOscuro;
+        set => SetProperty(ref _boolModoOscuro, value);
+    }
+
     public TareaModel? ObjTareaSeleccionada
     {
         get => _objTareaSeleccionada;
@@ -95,11 +103,18 @@ public class MainViewModel : ViewModelBase
     public ICommand CmdAlternarCompletada { get; }
     public ICommand CmdLimpiarCompletadas { get; }
     public ICommand CmdCambiarFiltro { get; }
+    public ICommand CmdAlternarTema { get; }
 
+    /// <summary>
+    /// Tarea: Constructor por defecto que inicializa el servicio de persistencia JSON.
+    /// </summary>
     public MainViewModel() : this(new ServicioPersistenciaJson())
     {
     }
 
+    /// <summary>
+    /// Tarea: Inicializa los comandos, rutas y carga los datos de inicio.
+    /// </summary>
     public MainViewModel(IServicioPersistencia srvPersistencia)
     {
         _srvPersistencia = srvPersistencia;
@@ -115,16 +130,23 @@ public class MainViewModel : ViewModelBase
         CmdAlternarCompletada = new RelayCommand(objParam => EjecutarAlternarCompletada(objParam as TareaModel));
         CmdLimpiarCompletadas = new RelayCommand(_ => EjecutarLimpiarCompletadas(), _ => IntTareasCompletadas > 0);
         CmdCambiarFiltro = new RelayCommand(objParam => StrFiltroActual = objParam?.ToString() ?? "Todas");
+        CmdAlternarTema = new RelayCommand(_ => EjecutarAlternarTema());
 
         CargarDatosIniciales();
     }
 
+    /// <summary>
+    /// Tarea: Valida si la tarea contiene un título no vacío antes de permitir la inserción.
+    /// </summary>
     private bool PuedeAgregarTarea()
     {
         return !string.IsNullOrWhiteSpace(_strNuevoTitulo);
     }
 
-    private void EjecutarAgregarTarea()
+    /// <summary>
+    /// Tarea: Agrega una nueva tarea a la colección, limpia los campos y guarda los cambios.
+    /// </summary>
+    public void EjecutarAgregarTarea()
     {
         if (string.IsNullOrWhiteSpace(_strNuevoTitulo))
         {
@@ -154,7 +176,10 @@ public class MainViewModel : ViewModelBase
         GuardarEnDisco();
     }
 
-    private void EjecutarEliminarTarea(TareaModel? objTarea)
+    /// <summary>
+    /// Tarea: Elimina la tarea especificada de la colección y persiste el cambio.
+    /// </summary>
+    public void EjecutarEliminarTarea(TareaModel? objTarea)
     {
         if (objTarea == null)
         {
@@ -167,7 +192,10 @@ public class MainViewModel : ViewModelBase
         GuardarEnDisco();
     }
 
-    private void EjecutarAlternarCompletada(TareaModel? objTarea)
+    /// <summary>
+    /// Tarea: Alterna el estado de completado de una tarea.
+    /// </summary>
+    public void EjecutarAlternarCompletada(TareaModel? objTarea)
     {
         if (objTarea == null)
         {
@@ -180,7 +208,10 @@ public class MainViewModel : ViewModelBase
         GuardarEnDisco();
     }
 
-    private void EjecutarLimpiarCompletadas()
+    /// <summary>
+    /// Tarea: Remueve todas las tareas que se encuentren marcadas como completadas.
+    /// </summary>
+    public void EjecutarLimpiarCompletadas()
     {
         var colCompletadas = _colTareas.Where(t => t.BoolCompletada).ToList();
         foreach (var objTarea in colCompletadas)
@@ -193,6 +224,36 @@ public class MainViewModel : ViewModelBase
         GuardarEnDisco();
     }
 
+    /// <summary>
+    /// Tarea: Conmuta el tema visual entre Claro y Oscuro aplicando el ResourceDictionary correspondiente.
+    /// </summary>
+    public void EjecutarAlternarTema()
+    {
+        BoolModoOscuro = !BoolModoOscuro;
+        string strRutaTema = BoolModoOscuro ? "Themes/Theme.Dark.xaml" : "Themes/Theme.Light.xaml";
+
+        try
+        {
+            if (Application.Current != null)
+            {
+                var objNuevoTema = new ResourceDictionary
+                {
+                    Source = new Uri(strRutaTema, UriKind.Relative)
+                };
+
+                Application.Current.Resources.MergedDictionaries.Clear();
+                Application.Current.Resources.MergedDictionaries.Add(objNuevoTema);
+            }
+        }
+        catch
+        {
+            // Ignorar en entornos de pruebas unitarias sin UI thread
+        }
+    }
+
+    /// <summary>
+    /// Tarea: Notifica los cambios en las propiedades de conteo de tareas.
+    /// </summary>
     private void ActualizarContadores()
     {
         OnPropertyChanged(nameof(IntTotalTareas));
@@ -200,7 +261,10 @@ public class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(IntTareasCompletadas));
     }
 
-    private void ActualizarVistaFiltrada()
+    /// <summary>
+    /// Tarea: Filtra la lista de tareas según el estado seleccionado y el término de búsqueda.
+    /// </summary>
+    public void ActualizarVistaFiltrada()
     {
         var query = _colTareas.AsEnumerable();
 
@@ -225,6 +289,9 @@ public class MainViewModel : ViewModelBase
         ColTareasFiltradas = new ObservableCollection<TareaModel>(query.ToList());
     }
 
+    /// <summary>
+    /// Tarea: Carga las tareas desde el servicio de persistencia o genera elementos de ejemplo iniciales.
+    /// </summary>
     private void CargarDatosIniciales()
     {
         var colCargadas = _srvPersistencia.CargarTareas(_strRutaDatos);
@@ -232,7 +299,6 @@ public class MainViewModel : ViewModelBase
 
         if (colCargadas.Count == 0)
         {
-            // Datos iniciales de demostración
             _colTareas.Add(new TareaModel(1, "¡Bienvenido a tu Todo List!", "Puedes agregar, completar, buscar y eliminar tareas.", false));
             _colTareas.Add(new TareaModel(2, "Revisar arquitectura MVVM", "Arquitectura desacoplada y fácil de extender.", true));
         }
@@ -261,6 +327,9 @@ public class MainViewModel : ViewModelBase
         ActualizarVistaFiltrada();
     }
 
+    /// <summary>
+    /// Tarea: Guarda la colección actual de tareas en el almacenamiento persistente.
+    /// </summary>
     private void GuardarEnDisco()
     {
         _srvPersistencia.GuardarTareas(_strRutaDatos, _colTareas);

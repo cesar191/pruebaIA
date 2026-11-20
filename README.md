@@ -1,56 +1,61 @@
-# Todo List WPF - Arquitectura MVVM
+# Todo List WPF - Arquitectura MVVM con Soporte Claro / Oscuro
 
-Aplicación de lista de tareas desarrollada en **WPF** (.NET 10 / Windows Presentation Foundation) siguiendo las especificaciones del directorio `.agents`.
+Aplicación de lista de tareas desarrollada en **WPF** (.NET 10 / Windows Presentation Foundation) siguiendo rigurosamente las especificaciones del directorio `.agents`.
 
 ---
 
 ## 🚀 Características
 - **Arquitectura MVVM**: Separación estricta de responsabilidades entre Vistas, ViewModels, Modelos y Servicios.
-- **Formato de variables estandarizado**: Nombramiento bajo el formato `{tipo}{tarea}` (documentado en `.agents/skills/VariableName/CSHARP_NAMING.md`).
-- **Persistencia local automática**: Guardado y carga transparente de tareas en formato JSON (`IServicioPersistencia`).
+- **Formato de variables `{tipo}{tarea}`**: Nombramiento estandarizado documentado en [.agents/skills/VariableName/CSHARP_NAMING.md](file:///d:/RepoGit/pruebaIA/.agents/skills/VariableName/CSHARP_NAMING.md).
+- **Documentación de Funciones**: Cada método inicia con un comentario corto que describe su tarea específica (`FunctionDesign`).
+- **Gestión de Temas (Claro / Oscuro)**: Conmutación dinámica en tiempo de ejecución con `DynamicResource` (`ThemeManager`).
+- **Persistencia local automática**: Guardado y carga transparente en JSON (`Persistence`).
 - **Filtros y Búsqueda en tiempo real**: Filtrado por estado (*Todas*, *Pendientes*, *Completadas*) y búsqueda por texto.
-- **Interfaz Moderna**: Diseño limpio con tarjetas, contadores en tiempo real, atajos de teclado y acciones rápidas.
+- **Suite de Pruebas Unitarias**: Cobertura con xUnit siguiendo el patrón AAA (`UnitTesting`).
+- **Análisis de Cambios**: Diagnóstico y hoja de ruta estructurada en [ANALISIS_CAMBIOS.md](file:///d:/RepoGit/pruebaIA/ANALISIS_CAMBIOS.md) (`ChangeAnalysis`).
 
 ---
 
 ## 🛠️ Estructura del Proyecto
 
 ```text
-TodoListWpf/
-├── Commands/
-│   └── RelayCommand.cs              # Implementación reusable de ICommand
-├── Converters/
-│   ├── BoolToOpacityConverter.cs    # Opacidad para tareas completadas
-│   └── BoolToStrikethroughConverter.cs # Tachado de texto dinámico
-├── Models/
-│   └── TareaModel.cs                # Modelo observable de datos
-├── Services/
-│   ├── IServicioPersistencia.cs     # Contrato de persistencia
-│   └── ServicioPersistenciaJson.cs  # Implementación en JSON local
-├── ViewModels/
-│   ├── ViewModelBase.cs             # Base con INotifyPropertyChanged
-│   └── MainViewModel.cs             # Lógica y estado de la aplicación
-├── Views / XAML:
-│   ├── MainWindow.xaml              # Interfaz de usuario responsiva
-│   └── MainWindow.xaml.cs           # Code-behind limpio (DataContext)
-└── TodoListWpf.csproj
+pruebaIA/
+├── .agents/
+│   └── skills/
+│       ├── Commit/            # Guía de commits atómicos
+│       ├── VariableName/      # Convención {tipo}{tarea} y guía C#
+│       ├── FunctionDesign/    # Estándar de comentarios de tarea en funciones
+│       ├── ThemeManager/      # Gestión de temas Claro/Oscuro en WPF
+│       ├── UnitTesting/       # Pautas para pruebas unitarias (AAA)
+│       ├── ChangeAnalysis/    # Análisis estructurado de cambios necesarios
+│       ├── WpfMvvm/           # Arquitectura MVVM desacoplada
+│       └── Persistence/       # Persistencia ligera en disco
+│
+├── TodoListWpf/
+│   ├── Commands/              # RelayCommand
+│   ├── Converters/            # Conversores para UI reactiva
+│   ├── Models/                # TareaModel con INotifyPropertyChanged
+│   ├── Services/              # IServicioPersistencia y ServicioPersistenciaJson
+│   ├── Themes/                # Theme.Light.xaml y Theme.Dark.xaml
+│   ├── ViewModels/            # MainViewModel y ViewModelBase
+│   └── Views/                 # MainWindow.xaml y MainWindow.xaml.cs
+│
+└── TodoListWpf.Tests/         # Suite de pruebas unitarias xUnit
+    ├── ModelsTests/
+    ├── ServicesTests/
+    └── ViewModelsTests/
 ```
 
 ---
 
-## 🤖 Skills en `.agents`
+## 💻 Comandos Principales
 
-1. **Commit**: Guía para análisis y creación de commits atómicos con descripciones claras.
-2. **VariableName**: Guía y documento `.md` de nombramiento de variables bajo `{tipo}{tarea}` para C#.
-3. **WpfMvvm**: Directrices modulares para diseño y mantenimiento de aplicaciones WPF con MVVM.
-4. **Persistence**: Guía para persistencia de datos liviana y desacoplada.
-
----
-
-## 💻 Cómo Ejecutar
-
-Para compilar y ejecutar el proyecto desde la terminal:
-
+### Ejecutar la Aplicación:
 ```powershell
 dotnet run --project TodoListWpf/TodoListWpf.csproj
+```
+
+### Ejecutar las Pruebas Unitarias:
+```powershell
+dotnet test TodoListWpf.Tests/TodoListWpf.Tests.csproj
 ```
